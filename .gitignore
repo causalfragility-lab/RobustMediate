@@ -1,0 +1,20 @@
+# R project files
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# R CMD check
+*.Rcheck/
+
+# Built package
+*.tar.gz
+*.zip
+
+# CRAN submission
+CRAN-SUBMISSION
+
+# Temp files
+*.log
+*.aux
+*.out
