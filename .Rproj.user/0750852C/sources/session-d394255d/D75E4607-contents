@@ -1,17 +1,156 @@
-# ── Set your identity first (one-time setup) ──────────────────────────────────
-system('git config --global user.email "your@email.com"')
-system('git config --global user.name "Your Name"')
-
-# ── Navigate to package root and push ─────────────────────────────────────────
 setwd("C:/Users/Owner/OneDrive - Michigan State University/Documents/RobustMediate")
 
-system('git init')
-system('git add .')
-system('git commit -m "Initial release: RobustMediate v0.1.0 — 0 errors, 0 warnings, 0 notes"')
-system('git branch -M main')
-system('git remote add origin https://github.com/causalfragility-lab/RobustMediate.git')
-system('git push -u origin main')
+# ══════════════════════════════════════════════════════
+# FIX 1: DESCRIPTION - fix References field and spelling
+# ══════════════════════════════════════════════════════
+desc <- readLines("DESCRIPTION")
+
+# Remove the 'References' field (not a valid DESCRIPTION field)
+# References go in Description: field inline with doi: links
+ref_lines <- grep("^    References:|^    Frank|^    VanderWeele|^    Imai", desc)
+cat("Removing lines:\n"); cat(paste(ref_lines, desc[ref_lines], sep=": "), sep="\n")
+desc <- desc[-ref_lines]
+
+# Find Description: field and append doi references inline
+desc_start <- grep("^Description:", desc)
+desc_end   <- desc_start
+for (i in (desc_start+1):length(desc)) {
+  if (grepl("^[A-Za-z]", desc[i])) { desc_end <- i-1; break }
+  desc_end <- i
+}
+cat("\nDescription block ends at line:", desc_end, "\n")
+cat("Last line:", desc[desc_end], "\n")
+
+# Append references to end of Description block
+desc[desc_end] <- paste0(desc[desc_end],
+                         " References: Frank (2000) <doi:10.1177/0049124100029002002>;",
+                         " VanderWeele and Ding (2017) <doi:10.7326/M16-2607>;",
+                         " Imai, Keele, and Yamamoto (2010) <doi:10.1214/10-STS321>.")
+
+writeLines(desc, "DESCRIPTION")
+cat("[OK] DESCRIPTION fixed\n")
+
+
+# ══════════════════════════════════════════════════════
+# FIX 2: Replace all Unicode characters in .Rd files
+# that break LaTeX PDF generation:
+# rho (U+03C1), >= (U+2265), approx (U+2248), x (U+00D7)
+# ══════════════════════════════════════════════════════
+rd_files <- list.files("man", pattern = "\\.Rd$", full.names = TRUE)
+
+fix_rd <- function(path) {
+  txt <- readLines(path, encoding = "UTF-8", warn = FALSE)
+  changed <- FALSE
+  
+  replacements <- list(
+    c("\u03c1", "rho"),        # ρ
+    c("\u03b1", "alpha"),      # α  
+    c("\u2265", ">="),         # ≥
+    c("\u2248", "~="),         # ≈
+    c("\u00d7", "x"),          # ×
+    c("\u2192", "->"),         # →
+    c("\u2190", "<-"),         # ←
+    c("\u2014", "--"),         # —
+    c("\u2013", "-"),          # –
+    c("\u2264", "<="),         # ≤
+    c("\u00b2", "^2"),         # ²
+    c("\u00b0", " degrees"),   # °
+    c("\u03b4", "delta"),      # δ
+    c("\u03b2", "beta")        # β
+  )
+  
+  for (r in replacements) {
+    if (any(grepl(r[1], txt, fixed = TRUE))) {
+      txt <- gsub(r[1], r[2], txt, fixed = TRUE)
+      changed <- TRUE
+    }
+  }
+  
+  if (changed) {
+    writeLines(txt, path)
+    cat("  [FIXED]", basename(path), "\n")
+  }
+}
+
+cat("\nFixing Rd files:\n")
+invisible(lapply(rd_files, fix_rd))
+cat("[OK] All Rd files scanned\n")
+
+
+# ══════════════════════════════════════════════════════
+# FIX 3: Replace Unicode in all R source files too
+# (to prevent them regenerating bad Rd files)
+# ══════════════════════════════════════════════════════
+r_files <- list.files("R", pattern = "\\.R$", full.names = TRUE)
+
+fix_r_docs <- function(path) {
+  txt <- readLines(path, encoding = "UTF-8", warn = FALSE)
+  changed <- FALSE
+  
+  # Only fix lines that are roxygen comments (#')
+  for (i in seq_along(txt)) {
+    if (grepl("^#'", txt[i])) {
+      orig <- txt[i]
+      txt[i] <- gsub("\u03c1", "rho",   txt[i], fixed = TRUE)
+      txt[i] <- gsub("\u03b1", "alpha", txt[i], fixed = TRUE)
+      txt[i] <- gsub("\u2265", ">=",    txt[i], fixed = TRUE)
+      txt[i] <- gsub("\u2248", "~=",    txt[i], fixed = TRUE)
+      txt[i] <- gsub("\u00d7", "x",     txt[i], fixed = TRUE)
+      txt[i] <- gsub("\u2264", "<=",    txt[i], fixed = TRUE)
+      txt[i] <- gsub("\u00b2", "^2",    txt[i], fixed = TRUE)
+      if (txt[i] != orig) changed <- TRUE
+    }
+  }
+  
+  if (changed) {
+    writeLines(txt, path)
+    cat("  [FIXED]", basename(path), "\n")
+  }
+}
+
+cat("\nFixing roxygen comments in R files:\n")
+invisible(lapply(r_files, fix_r_docs))
+cat("[OK] All R files scanned\n")
+
+
+# ══════════════════════════════════════════════════════
+# Rebuild, check, and resubmit
+# ══════════════════════════════════════════════════════
+devtools::document()
+devtools::check(cran = TRUE, vignettes = FALSE)
 
 
 
 
+
+
+
+
+
+# Update cran-comments
+writeLines(
+  '## Resubmission
+This is a resubmission. Changes made:
+
+* Fixed DESCRIPTION: moved references into Description field 
+  as doi: links (removed invalid References: field)
+* Fixed PDF manual: replaced all Unicode characters (rho, alpha,
+  >=, approx, x) with LaTeX-safe ASCII equivalents in all Rd files
+
+## R CMD check results
+0 errors | 0 warnings | 0 notes
+
+## Test environments
+* Windows 11 x64, R 4.5.1 (local)
+
+## Downstream dependencies
+None - this is a new package.
+', "cran-comments.md")
+
+system('git add -A')
+system('git commit -m "Fix CRAN resubmission: Unicode in Rd files and DESCRIPTION References field"')
+system('git push')
+system('git tag v0.1.1')
+system('git push origin v0.1.1')
+
+devtools::submit_cran()

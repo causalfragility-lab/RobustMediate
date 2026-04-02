@@ -1,10 +1,10 @@
-#' Sensitivity Contour Plot: Joint E-value × Rho Display
+#' Sensitivity Contour Plot: Joint E-value x Rho Display
 #'
 #' @description
 #' Renders the novel bivariate robustness map unique to **RobustMediate**: a 2-D
 #' heatmap where the x-axis is the E-value (VanderWeele-style unmeasured
 #' treatment–outcome confounding) and the y-axis is Imai's sequential-ignorability
-#' violation parameter ρ. Contour lines show where the mediation effect crosses
+#' violation parameter rho. Contour lines show where the mediation effect crosses
 #' zero, so readers can judge robustness to **two different** sensitivity
 #' dimensions simultaneously.
 #'

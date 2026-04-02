@@ -15,7 +15,7 @@ Description: Provides tools for causal mediation analysis with continuous
     (VanderWeele and Ding, 2017) and sequential ignorability violations
     (Imai et al., 2010). Additional utilities include visualization of
     dose-response mediation functions and formatted diagnostic summaries
-    for applied analyses. Supports clustered data and multiple outcome families.
+    for applied analyses. Supports clustered data and multiple outcome families. References: Frank (2000) <doi:10.1177/0049124100029002002>; VanderWeele and Ding (2017) <doi:10.7326/M16-2607>; Imai, Keele, and Yamamoto (2010) <doi:10.1214/10-STS321>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -46,12 +46,9 @@ VignetteBuilder: knitr
 URL: https://github.com/causalfragility-lab/RobustMediate
 BugReports: https://github.com/causalfragility-lab/RobustMediate/issues
 References:
-    Frank, K. A. (2000). Impact of a confounding variable on a regression
     coefficient. Sociological Methods & Research, 29(2), 147--194.
     <doi:10.1177/0049124100029002001>.
-    Imai, K., Keele, L., and Yamamoto, T. (2010). Identification, inference,
     and sensitivity analysis for causal mediation effects. Psychological Methods,
     15(4), 309--334. <doi:10.1037/a0020761>.
-    VanderWeele, T. J., and Ding, P. (2017). Sensitivity analysis in observational
     research: Introducing the E-value. Annals of Internal Medicine, 167(4), 268--274.
     <doi:10.7326/M16-2607>.

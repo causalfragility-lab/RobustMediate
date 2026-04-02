@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_sensitivity.R
 \name{plot_sensitivity}
 \alias{plot_sensitivity}
-\title{Sensitivity Contour Plot: Joint E-value × Rho Display}
+\title{Sensitivity Contour Plot: Joint E-value x Rho Display}
 \usage{
 plot_sensitivity(
   x,
@@ -31,7 +31,7 @@ A \code{ggplot2} object.
 Renders the novel bivariate robustness map unique to \strong{RobustMediate}: a 2-D
 heatmap where the x-axis is the E-value (VanderWeele-style unmeasured
 treatment–outcome confounding) and the y-axis is Imai's sequential-ignorability
-violation parameter ρ. Contour lines show where the mediation effect crosses
+violation parameter rho. Contour lines show where the mediation effect crosses
 zero, so readers can judge robustness to \strong{two different} sensitivity
 dimensions simultaneously.
 
