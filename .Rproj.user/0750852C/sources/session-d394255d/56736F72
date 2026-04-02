@@ -1,0 +1,26 @@
+{
+    "id": "56736F72",
+    "path": "~/RobustMediate/R/methods.R",
+    "project_path": "R/methods.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1775143720716.0,
+    "source_on_save": false,
+    "relative_order": 10,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "88,0",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1775148917,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1775148917098,
+    "read_only": false,
+    "read_only_alternatives": []
+}

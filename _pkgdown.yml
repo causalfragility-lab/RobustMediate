@@ -1,0 +1,78 @@
+url: https://yourname.github.io/RobustMediate/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#534AB7"
+    link-color: "#0F6E56"
+
+home:
+  title: "RobustMediate"
+  description: >
+    Robust causal mediation analysis with diagnostics, dose-response curves,
+    and a novel bivariate sensitivity contour for R.
+  links:
+    - text: "Browse source code"
+      href: https://github.com/yourname/RobustMediate
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/yourname/RobustMediate
+      aria-label: GitHub
+
+reference:
+  - title: "Main function"
+    desc: "Fit the mediation model — start here."
+    contents:
+      - robustmediate
+
+  - title: "Visualisation"
+    desc: "Three publication-ready plots, each baked into the workflow."
+    contents:
+      - plot_balance
+      - plot_mediation
+      - plot_sensitivity
+      - plot.robmedfit
+      - compare_fits
+
+  - title: "Diagnostics & reporting"
+    desc: "Paper-writing helpers."
+    contents:
+      - diagnose
+      - tipping_table
+
+  - title: "S3 methods"
+    desc: "Standard R and broom-compatible methods."
+    contents:
+      - print.robmedfit
+      - summary.robmedfit
+      - tidy.robmedfit
+      - glance.robmedfit
+      - augment.robmedfit
+      - as.data.frame.robmedfit
+
+  - title: "Data"
+    desc: "Built-in example dataset."
+    contents:
+      - sim_mediation
+
+  - title: "Package"
+    contents:
+      - RobustMediate-package
+
+articles:
+  - title: "Get started"
+    navbar: ~
+    contents:
+      - getting-started
+
+news:
+  releases:
+    - text: "Version 0.1.0"
+      href: https://github.com/yourname/RobustMediate/releases/tag/v0.1.0

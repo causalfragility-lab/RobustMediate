@@ -1,0 +1,230 @@
+#' Impact Threshold for a Confounding Variable for Mediation
+#'
+#' @description
+#' Computes a mediation-specific extension of Kenneth Frank's (2000)
+#' impact threshold for a confounding variable (ITCV) for both
+#' pathways of a mediation model:
+#'
+#' - a-path: treatment to mediator
+#' - b-path: mediator to outcome (controlling for treatment)
+#'
+#' The pathway-specific threshold is defined in terms of the product
+#' \eqn{r_{XC} * r_{YC}}, representing the impact of an omitted
+#' confounder on the focal pathway coefficient.
+#'
+#' In mediation settings, robustness is pathway-specific. Accordingly,
+#' this function reports separate thresholds for the a-path and b-path,
+#' together with a minimum-path robustness summary for the indirect effect.
+#'
+#' The indirect-effect summary should be interpreted as a minimum-path
+#' robustness bound, not as an exact ITCV for the product term
+#' \eqn{a * b}.
+#'
+#' @param x A `robmedfit` object returned by [robustmediate()].
+#' @param alpha Significance level. Default is `0.05`.
+#'
+#' @return An object of class `c("meditcv", "itcv_mediation")`.
+#'
+#' @seealso [plot_itcv()], [print.itcv_mediation()]
+#'
+#' @export
+sensitivity_itcv <- function(x, alpha = 0.05) {
+
+  if (!inherits(x, "robmedfit")) {
+    rlang::abort("`x` must be a `robmedfit` object.")
+  }
+
+  treat_var <- x$meta$treat_var
+  med_var   <- x$meta$med_var
+
+  a_res <- .itcv_pathway(
+    model = x$models$mediator,
+    predictor_var = treat_var,
+    alpha = alpha,
+    label = "a-path (X -> M)"
+  )
+
+  b_res <- .itcv_pathway(
+    model = x$models$outcome,
+    predictor_var = med_var,
+    alpha = alpha,
+    label = "b-path (M -> Y | X)"
+  )
+
+  indirect_itcv <- min(a_res$itcv, b_res$itcv)
+
+  bottleneck <- if (a_res$itcv <= b_res$itcv) {
+    "a-path (X -> M)"
+  } else {
+    "b-path (M -> Y | X)"
+  }
+
+  pct_replace_a <- if (abs(a_res$r_obs) < 1e-10) NA_real_
+  else 100 * a_res$itcv / abs(a_res$r_obs)
+
+  pct_replace_b <- if (abs(b_res$r_obs) < 1e-10) NA_real_
+  else 100 * b_res$itcv / abs(b_res$r_obs)
+
+  indirect <- list(
+    itcv_indirect = indirect_itcv,
+    meditcv_indirect = indirect_itcv,
+    bottleneck = bottleneck,
+    pct_replace_a = pct_replace_a,
+    pct_replace_b = pct_replace_b
+  )
+
+  out <- list(
+    a_path = a_res,
+    b_path = b_res,
+    indirect = indirect,
+    alpha = alpha
+  )
+
+  # dual class for backward compatibility; "meditcv" preferred
+  structure(out, class = c("meditcv", "itcv_mediation"))
+}
+
+
+# Internal helper --------------------------------------------------------------
+
+.itcv_pathway <- function(model, predictor_var, alpha, label) {
+
+  co <- stats::coef(model)
+  vc <- stats::vcov(model)
+  df <- stats::df.residual(model)
+
+  if (!predictor_var %in% names(co)) {
+    rlang::abort(
+      paste0("Predictor '", predictor_var, "' not found in model coefficients.")
+    )
+  }
+
+  b  <- unname(co[predictor_var])
+  se <- sqrt(diag(vc)[predictor_var])
+
+  if (!is.finite(se) || se <= 1e-12) {
+    rlang::abort("Standard error is zero or not finite.")
+  }
+
+  t_stat <- b / se
+
+  r_obs  <- sign(t_stat) * sqrt(t_stat^2 / (t_stat^2 + df))
+  t_crit <- stats::qt(1 - alpha / 2, df = df)
+  r_crit <- t_crit / sqrt(t_crit^2 + df)
+
+  itcv <- abs(r_obs) - r_crit
+  itcv_pct <- 100 * itcv / (1 - r_crit)
+
+  bm_r <- c(0.1, 0.2, 0.3, 0.5)
+
+  benchmarks <- data.frame(
+    r_confounder = bm_r,
+    impact = bm_r^2,
+    exceeds_itcv = bm_r^2 > abs(itcv),
+    exceeds_meditcv = bm_r^2 > abs(itcv),
+    stringsAsFactors = FALSE
+  )
+
+  list(
+    label = label,
+    predictor = predictor_var,
+    coef = b,
+    se = se,
+    t_stat = t_stat,
+    df = df,
+    t_crit = t_crit,
+    r_obs = r_obs,
+    r_crit = r_crit,
+    itcv = itcv,
+    itcv_pct = itcv_pct,
+    meditcv = itcv,
+    meditcv_pct = itcv_pct,
+    significant = abs(t_stat) > t_crit,
+    benchmarks = benchmarks
+  )
+}
+
+
+#' @export
+print.itcv_mediation <- function(x, ...) {
+
+  cat("==============================================================\n")
+  cat("         ITCV for Mediation: Pathway Robustness Report\n")
+  cat("==============================================================\n\n")
+
+  for (pwy in list(x$a_path, x$b_path)) {
+
+    sig_flag <- if (pwy$significant) "significant" else "NOT significant"
+
+    cat(sprintf("-- %s (%s) ----------------------------------\n",
+                pwy$label, sig_flag))
+
+    cat(sprintf(
+      "  Coefficient : %+.4f  (SE = %.4f, t = %.3f, df = %d)\n",
+      pwy$coef, pwy$se, pwy$t_stat, pwy$df
+    ))
+
+    cat(sprintf(
+      "  Observed partial r : %.4f   |   Critical r (alpha = %.2f) : %.4f\n",
+      pwy$r_obs, x$alpha, pwy$r_crit
+    ))
+
+    if (pwy$itcv >= 0) {
+      cat(sprintf(
+        "  ITCV = %.4f  (%+.1f%% above threshold)\n",
+        pwy$itcv, pwy$itcv_pct
+      ))
+      cat(sprintf(
+        "  Need |r_XC * r_YC| > %.4f to invalidate this pathway.\n",
+        pwy$itcv
+      ))
+    } else {
+      cat(sprintf(
+        "  ITCV = %.4f  - inference already below threshold.\n",
+        pwy$itcv
+      ))
+    }
+
+    cat("\n  Benchmark impacts (r_confounder^2):\n")
+
+    bm <- pwy$benchmarks
+
+    for (i in seq_len(nrow(bm))) {
+
+      flag <- if (bm$exceeds_itcv[i]) {
+        "  WOULD INVALIDATE"
+      } else {
+        "  would not invalidate"
+      }
+
+      cat(sprintf(
+        "    r = %.1f  ->  impact = %.2f%s\n",
+        bm$r_confounder[i], bm$impact[i], flag
+      ))
+    }
+
+    cat("\n")
+  }
+
+  ind <- x$indirect
+
+  cat("-- Indirect effect (a * b) ----------------------------\n")
+  cat(sprintf("  Bottleneck pathway   : %s\n", ind$bottleneck))
+  cat(sprintf("  Minimum-path ITCV    : %.4f\n", ind$itcv_indirect))
+  cat("  Fragility governed by the weaker pathway.\n")
+  cat("--------------------------------------------------------------\n")
+
+  invisible(x)
+}
+
+
+#' @export
+print.meditcv <- function(x, ...) {
+  print.itcv_mediation(x, ...)
+}
+
+
+#' @export
+plot_meditcv <- function(x, ...) {
+  plot_itcv(x, ...)
+}

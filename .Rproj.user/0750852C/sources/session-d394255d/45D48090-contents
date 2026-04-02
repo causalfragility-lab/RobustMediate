@@ -1,0 +1,57 @@
+Package: RobustMediate
+Title: Causal Mediation Analysis with Diagnostics and Sensitivity Analysis
+Version: 0.1.0
+Authors@R: 
+    person("Subir", "Hait", , "haitsubi@msu.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0004-9871-9677"))
+Description: Provides tools for causal mediation analysis with continuous
+    treatments using inverse probability weighting (IPW). Estimates natural
+    direct and indirect effects over a user-defined treatment grid and includes
+    diagnostic and sensitivity analysis procedures. Balance diagnostics are
+    provided for both treatment and mediator models using standardized mean
+    differences. The package implements pathway-specific extensions of the
+    impact threshold for a confounding variable (ITCV; Frank, 2000) for
+    mediation settings, along with joint visualization of E-values
+    (VanderWeele and Ding, 2017) and sequential ignorability violations
+    (Imai et al., 2010). Additional utilities include visualization of
+    dose-response mediation functions and formatted diagnostic summaries
+    for applied analyses. Supports clustered data and multiple outcome families.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.1.0)
+Imports:
+    cli,
+    ggplot2 (>= 3.4.0),
+    rlang,
+    scales,
+    stats
+Suggests:
+    dplyr,
+    tidyr,
+    splines,
+    methods,
+    lme4,
+    broom,
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
+    pkgdown,
+    covr
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+URL: https://github.com/causalfragility-lab/RobustMediate
+BugReports: https://github.com/causalfragility-lab/RobustMediate/issues
+References:
+    Frank, K. A. (2000). Impact of a confounding variable on a regression
+    coefficient. Sociological Methods & Research, 29(2), 147--194.
+    <doi:10.1177/0049124100029002001>.
+    Imai, K., Keele, L., and Yamamoto, T. (2010). Identification, inference,
+    and sensitivity analysis for causal mediation effects. Psychological Methods,
+    15(4), 309--334. <doi:10.1037/a0020761>.
+    VanderWeele, T. J., and Ding, P. (2017). Sensitivity analysis in observational
+    research: Introducing the E-value. Annals of Internal Medicine, 167(4), 268--274.
+    <doi:10.7326/M16-2607>.

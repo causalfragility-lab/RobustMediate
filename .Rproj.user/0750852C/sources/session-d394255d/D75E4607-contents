@@ -1,0 +1,17 @@
+# ── Set your identity first (one-time setup) ──────────────────────────────────
+system('git config --global user.email "your@email.com"')
+system('git config --global user.name "Your Name"')
+
+# ── Navigate to package root and push ─────────────────────────────────────────
+setwd("C:/Users/Owner/OneDrive - Michigan State University/Documents/RobustMediate")
+
+system('git init')
+system('git add .')
+system('git commit -m "Initial release: RobustMediate v0.1.0 — 0 errors, 0 warnings, 0 notes"')
+system('git branch -M main')
+system('git remote add origin https://github.com/causalfragility-lab/RobustMediate.git')
+system('git push -u origin main')
+
+
+
+
