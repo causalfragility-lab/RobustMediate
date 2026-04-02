@@ -154,3 +154,20 @@ system('git tag v0.1.1')
 system('git push origin v0.1.1')
 
 devtools::submit_cran()
+
+
+
+
+
+
+
+
+# Add .Rproj.user to .gitignore
+gitignore <- readLines(".gitignore")
+if (!any(grepl(".Rproj.user", gitignore, fixed = TRUE))) {
+  cat("\n.Rproj.user/\n", file = ".gitignore", append = TRUE)
+  system('git add .gitignore')
+  system('git commit -m "Add .Rproj.user to .gitignore"')
+  system('git push')
+  cat("[OK] .gitignore updated\n")
+}
