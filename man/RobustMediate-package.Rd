@@ -81,6 +81,7 @@ research: Introducing the E-value. \emph{Annals of Internal Medicine}, 167(4),
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://causalfragility-lab.github.io/RobustMediate}
   \item \url{https://github.com/causalfragility-lab/RobustMediate}
   \item Report bugs at \url{https://github.com/causalfragility-lab/RobustMediate/issues}
 }

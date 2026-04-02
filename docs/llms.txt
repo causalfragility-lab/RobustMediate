@@ -1,0 +1,182 @@
+# RobustMediate
+
+**Robust causal mediation analysis** with embedded diagnostics,
+dose-response curves, pathway-specific sensitivity (medITCV), and a
+novel bivariate sensitivity contour.
+
+## What it does
+
+| Function | What it gives you |
+|----|----|
+| [`robustmediate()`](https://causalfragility-lab.github.io/RobustMediate/reference/robustmediate.md) | Fit treatment / mediator / outcome models, compute IPW weights, NDE/NIE/TE curves with bootstrap CIs, and the full sensitivity surface in one call |
+| [`plot_balance()`](https://causalfragility-lab.github.io/RobustMediate/reference/plot_balance.md) | Dual love plot: covariate balance before/after weighting for **both** pathways simultaneously |
+| [`plot_mediation()`](https://causalfragility-lab.github.io/RobustMediate/reference/plot_mediation.md) | Dose-response curves of NDE, NIE, TE with pointwise confidence bands |
+| [`plot_sensitivity()`](https://causalfragility-lab.github.io/RobustMediate/reference/plot_sensitivity.md) | Novel 2-D robustness map: E-value x Imai rho — does not exist elsewhere in R |
+| [`sensitivity_meditcv()`](https://causalfragility-lab.github.io/RobustMediate/reference/sensitivity_meditcv.md) | Pathway-specific mediation ITCV (medITCV) for a-path and b-path |
+| [`plot_meditcv()`](https://causalfragility-lab.github.io/RobustMediate/reference/plot_meditcv.md) | Robustness corridor plot for each pathway |
+| [`sensitivity_meditcv_profile()`](https://causalfragility-lab.github.io/RobustMediate/reference/sensitivity_meditcv_profile.md) | Minimum robustness principle + bottleneck identification |
+| [`plot_meditcv_profile()`](https://causalfragility-lab.github.io/RobustMediate/reference/plot_meditcv_profile.md) | Fragility profile as confounding impact increases |
+| [`fragility_table()`](https://causalfragility-lab.github.io/RobustMediate/reference/fragility_table.md) | Publication-ready pathway decomposition table |
+| [`diagnose()`](https://causalfragility-lab.github.io/RobustMediate/reference/diagnose.md) | Formatted report with a paste-ready Results paragraph |
+
+## Installation
+
+``` r
+
+# Development version from GitHub
+# install.packages("pak")
+pak::pkg_install("causalfragility-lab/RobustMediate")
+```
+
+## Quick start
+
+``` r
+
+library(RobustMediate)
+
+fit <- robustmediate(
+  treatment_formula = X ~ Z1 + Z2,
+  mediator_formula  = M ~ X + Z1 + Z2,
+  outcome_formula   = Y ~ X + M + Z1 + Z2,
+  data = mydata,
+  R    = 500
+)
+
+plot_balance(fit)                        # love plot
+plot_mediation(fit)                      # NDE / NIE dose-response curve
+plot_sensitivity(fit)                    # E-value x rho contour
+plot(fit, type = "meditcv")             # medITCV robustness corridor
+plot(fit, type = "meditcv_profile")     # fragility profile
+fragility_table(fit)                     # pathway decomposition
+diagnose(fit)                            # paste into Results section
+```
+
+## Why this package?
+
+- `EValue` plots E-values only
+- `mediation` plots rho sensitivity only\
+- `cobalt` / `WeightIt` do love plots for treatment only
+
+**RobustMediate** combines all three into one coherent workflow tailored
+to continuous-treatment mediation, and adds:
+
+- The joint E-value x rho contour that exists nowhere else in R
+- Pathway-specific medITCV (mediation ITCV) extending Frank (2000) to
+  mediation
+- Minimum robustness principle and bottleneck identification for
+  indirect effects
+
+## References
+
+- Frank, K. A. (2000). Impact of a confounding variable on a regression
+  coefficient. *Sociological Methods & Research*, 29(2), 147-194.
+- VanderWeele, T. J. & Ding, P. (2017). Sensitivity analysis in
+  observational research: Introducing the E-value. *Annals of Internal
+  Medicine*, 167(4), 268-274.
+- Imai, K., Keele, L., & Yamamoto, T. (2010). Identification, inference
+  and sensitivity analysis for causal mediation effects. *Statistical
+  Science*, 25(1), 51-71.
+
+## Contributing
+
+Bug reports and feature requests via [GitHub
+Issues](https://github.com/causalfragility-lab/RobustMediate/issues).
+
+## License
+
+MIT
+
+# Package index
+
+## Main fitting function
+
+- [`robustmediate()`](https://causalfragility-lab.github.io/RobustMediate/reference/robustmediate.md)
+  : Robust Causal Mediation Analysis
+
+## Print and summary methods
+
+- [`print(`*`<robmedfit>`*`)`](https://causalfragility-lab.github.io/RobustMediate/reference/print.robmedfit.md)
+  : Print a robmedfit object
+- [`summary(`*`<robmedfit>`*`)`](https://causalfragility-lab.github.io/RobustMediate/reference/summary.robmedfit.md)
+  : Summary method for robmedfit objects
+- [`plot(`*`<robmedfit>`*`)`](https://causalfragility-lab.github.io/RobustMediate/reference/plot.robmedfit.md)
+  : Plot a robmedfit object
+
+## Mediation ITCV (medITCV)
+
+Pathway-specific robustness via mediation ITCV
+
+- [`sensitivity_meditcv()`](https://causalfragility-lab.github.io/RobustMediate/reference/sensitivity_meditcv.md)
+  : Mediation ITCV (medITCV) for pathway-specific robustness
+- [`print(`*`<meditcv>`*`)`](https://causalfragility-lab.github.io/RobustMediate/reference/print.meditcv.md)
+  : Print a meditcv object
+- [`plot_meditcv()`](https://causalfragility-lab.github.io/RobustMediate/reference/plot_meditcv.md)
+  : Plot medITCV robustness corridors for both mediation pathways
+- [`sensitivity_meditcv_profile()`](https://causalfragility-lab.github.io/RobustMediate/reference/sensitivity_meditcv_profile.md)
+  : medITCV Robustness Profile: Pathway-Specific Fragility Framework
+- [`print(`*`<meditcv_profile>`*`)`](https://causalfragility-lab.github.io/RobustMediate/reference/print.meditcv_profile.md)
+  : Print a meditcv_profile object
+- [`plot_meditcv_profile()`](https://causalfragility-lab.github.io/RobustMediate/reference/plot_meditcv_profile.md)
+  : Plot the medITCV Robustness Profile
+- [`fragility_table()`](https://causalfragility-lab.github.io/RobustMediate/reference/fragility_table.md)
+  : Pathway Fragility Decomposition Table
+
+## Sensitivity analysis
+
+E-value, rho surface, and curvature-based fragility
+
+- [`sensitivity_curvature()`](https://causalfragility-lab.github.io/RobustMediate/reference/sensitivity_curvature.md)
+  : Dose-Varying Fragility: Curvature-Based Sensitivity
+- [`plot_curvature()`](https://causalfragility-lab.github.io/RobustMediate/reference/plot_curvature.md)
+  : Plot Dose-Varying Fragility (Curvature-Based Sensitivity)
+
+## Plots
+
+Visualisation functions
+
+- [`plot_balance()`](https://causalfragility-lab.github.io/RobustMediate/reference/plot_balance.md)
+  : Love Plot: Balance Diagnostics for Both Pathways
+- [`plot_mediation()`](https://causalfragility-lab.github.io/RobustMediate/reference/plot_mediation.md)
+  : Dose-Response Curve: Natural Direct and Indirect Effects
+- [`plot_sensitivity()`](https://causalfragility-lab.github.io/RobustMediate/reference/plot_sensitivity.md)
+  : Sensitivity Contour Plot: Joint E-value x Rho Display
+
+## Diagnostics and utilities
+
+- [`diagnose()`](https://causalfragility-lab.github.io/RobustMediate/reference/diagnose.md)
+  : Diagnose a robmedfit Object
+- [`tipping_table()`](https://causalfragility-lab.github.io/RobustMediate/reference/tipping_table.md)
+  : Extract Tipping-Point Table
+- [`compare_fits()`](https://causalfragility-lab.github.io/RobustMediate/reference/compare_fits.md)
+  : Compare Two robmedfit Objects Side by Side
+
+## broom methods
+
+- [`tidy.robmedfit()`](https://causalfragility-lab.github.io/RobustMediate/reference/tidy.robmedfit.md)
+  : Tidy a robmedfit object (broom-compatible)
+- [`glance.robmedfit()`](https://causalfragility-lab.github.io/RobustMediate/reference/glance.robmedfit.md)
+  : Glance at a robmedfit object (broom-compatible)
+- [`augment.robmedfit()`](https://causalfragility-lab.github.io/RobustMediate/reference/augment.robmedfit.md)
+  : Augment data with fitted values from a robmedfit object
+  (broom-compatible)
+- [`as.data.frame(`*`<robmedfit>`*`)`](https://causalfragility-lab.github.io/RobustMediate/reference/as.data.frame.robmedfit.md)
+  : Coerce effects curve to a data frame
+
+## Data
+
+- [`sim_mediation`](https://causalfragility-lab.github.io/RobustMediate/reference/sim_mediation.md)
+  : Simulated Mediation Study Data
+
+## Package
+
+- [`RobustMediate`](https://causalfragility-lab.github.io/RobustMediate/reference/RobustMediate-package.md)
+  [`RobustMediate-package`](https://causalfragility-lab.github.io/RobustMediate/reference/RobustMediate-package.md)
+  : RobustMediate: Causal Mediation Analysis with Diagnostics and
+  Sensitivity Analysis
+
+# Articles
+
+### All vignettes
+
+- [Getting Started with
+  RobustMediate](https://causalfragility-lab.github.io/RobustMediate/articles/getting-started.md):
