@@ -55,7 +55,7 @@
 #' }
 #'
 #' @examples
-#' set.seed(42)
+#' \donttest{
 #' n <- 400
 #' Z1 <- rnorm(n)
 #' Z2 <- rbinom(n, 1, 0.5)
@@ -73,7 +73,7 @@
 #' )
 #'
 #' print(fit)
-#'
+#' }
 #' @export
 robustmediate <- function(
     treatment_formula,

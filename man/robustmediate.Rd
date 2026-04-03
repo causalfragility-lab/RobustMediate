@@ -97,7 +97,7 @@ with continuous treatments using inverse probability weighting (IPW), and
 returns a precomputed \code{robmedfit} object for plotting and diagnostics.
 }
 \examples{
-set.seed(42)
+\donttest{
 n <- 400
 Z1 <- rnorm(n)
 Z2 <- rbinom(n, 1, 0.5)
@@ -115,5 +115,5 @@ fit <- robustmediate(
 )
 
 print(fit)
-
+}
 }
