@@ -85,9 +85,10 @@ bootstrap intervals.}
 \code{sensitivity_meditcv()}.}
 \item{\code{meditcv_profile}}{medITCV robustness profile from
 \code{sensitivity_meditcv_profile()}.}
-\item{\code{cluster}}{Cluster information, or \code{NULL} if clustering was not used.}
-\item{\code{meta}}{Call, variable names, dose settings, bootstrap settings, and
-sample information.}
+\item{\code{cluster}}{Cluster information, or \code{NULL} if clustering was not
+used.}
+\item{\code{meta}}{Call, variable names, dose settings, bootstrap settings,
+and sample information.}
 }
 }
 \description{
