@@ -4,7 +4,7 @@
 \alias{augment.robmedfit}
 \title{Augment data with fitted values from a robmedfit object (broom-compatible)}
 \usage{
-augment.robmedfit(x, data = NULL, ...)
+\method{augment}{robmedfit}(x, data = NULL, ...)
 }
 \arguments{
 \item{x}{A \code{robmedfit} object.}
@@ -29,8 +29,13 @@ Returns the original data augmented with IPW weights, fitted mediator values,
 and fitted outcome values from the pathway models.
 }
 \examples{
-\dontrun{
-fit <- robustmediate(X ~ Z, M ~ X + Z, Y ~ X + M + Z, data = dat)
+\donttest{
+fit <- robustmediate(
+  treatment_formula = X ~ Z1 + Z2 + Z3,
+  mediator_formula  = M ~ X + Z1 + Z2 + Z3,
+  outcome_formula   = Y ~ X + M + Z1 + Z2 + Z3,
+  data = sim_mediation, R = 50
+)
 aug <- augment(fit)
 hist(aug$.ipw_weight)
 }

@@ -4,7 +4,7 @@
 \alias{glance.robmedfit}
 \title{Glance at a robmedfit object (broom-compatible)}
 \usage{
-glance.robmedfit(x, ...)
+\method{glance}{robmedfit}(x, ...)
 }
 \arguments{
 \item{x}{A \code{robmedfit} object.}
@@ -19,8 +19,13 @@ Returns a one-row summary of the fit: sample size, bootstrap reps, reference
 dose, percentage mediated, and the two tipping-point sensitivity values.
 }
 \examples{
-\dontrun{
-fit <- robustmediate(X ~ Z, M ~ X + Z, Y ~ X + M + Z, data = dat)
+\donttest{
+fit <- robustmediate(
+  treatment_formula = X ~ Z1 + Z2 + Z3,
+  mediator_formula  = M ~ X + Z1 + Z2 + Z3,
+  outcome_formula   = Y ~ X + M + Z1 + Z2 + Z3,
+  data = sim_mediation, R = 50
+)
 glance(fit)
 }
 

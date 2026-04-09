@@ -16,8 +16,13 @@
 #' @return A `ggplot2` object. Add layers or themes as usual.
 #'
 #' @examples
-#' \dontrun{
-#' fit <- robustmediate(X ~ Z, M ~ X + Z, Y ~ X + M + Z, data = mydata)
+#' \donttest{
+#' fit <- robustmediate(
+#'   treatment_formula = X ~ Z1 + Z2 + Z3,
+#'   mediator_formula  = M ~ X + Z1 + Z2 + Z3,
+#'   outcome_formula   = Y ~ X + M + Z1 + Z2 + Z3,
+#'   data = sim_mediation, R = 50
+#' )
 #' plot_balance(fit)
 #' plot_balance(fit, threshold = 0.05, pathways = "treatment")
 #' }
@@ -47,7 +52,7 @@ plot_balance <- function(x, threshold = 0.1,
   long$covariate <- factor(long$covariate, levels = rev(ord))
 
   ggplot2::ggplot(long, ggplot2::aes(x = smd, y = covariate,
-                                      colour = timing, shape = timing)) +
+                                     colour = timing, shape = timing)) +
     ggplot2::geom_vline(xintercept = c(-threshold, threshold),
                         linetype = "dashed", colour = "grey60", linewidth = 0.4) +
     ggplot2::geom_vline(xintercept = 0, colour = "grey30", linewidth = 0.4) +
@@ -68,7 +73,7 @@ plot_balance <- function(x, threshold = 0.1,
     ggplot2::labs(
       x       = "Standardised mean difference",
       y       = NULL,
-      caption = paste0("Dashed lines at \u00b1", threshold,
+      caption = paste0("Dashed lines at +/-", threshold,
                        ".  Open circles = before weighting; filled = after.")
     ) +
     ggplot2::theme_minimal(base_size = 11) +

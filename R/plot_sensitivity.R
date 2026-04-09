@@ -22,8 +22,13 @@
 #' @return A `ggplot2` object.
 #'
 #' @examples
-#' \dontrun{
-#' fit <- robustmediate(X ~ Z, M ~ X + Z, Y ~ X + M + Z, data = mydata)
+#' \donttest{
+#' fit <- robustmediate(
+#'   treatment_formula = X ~ Z1 + Z2 + Z3,
+#'   mediator_formula  = M ~ X + Z1 + Z2 + Z3,
+#'   outcome_formula   = Y ~ X + M + Z1 + Z2 + Z3,
+#'   data = sim_mediation, R = 50
+#' )
 #' plot_sensitivity(fit)
 #' plot_sensitivity(fit, annotate_zero = FALSE, palette = "PuOr")
 #' }
@@ -51,8 +56,8 @@ plot_sensitivity <- function(x, annotate_zero = TRUE,
       x       = "E-value  (unmeasured treatment\u2013outcome confounding)",
       y       = expression(rho ~ "(sequential ignorability violation)"),
       caption = paste0(
-        "Zero-crossing: E-value \u2248 ", round(tip$evalue_NIE, 2),
-        " | min |\u03c1| \u2248 ", round(abs(tip$rho_min), 2),
+        "Zero-crossing: E-value ~= ", round(tip$evalue_NIE, 2),
+        " | min |rho| ~= ", round(abs(tip$rho_min), 2),
         ".\nInterpreted as a bivariate robustness display (not a joint causal model)."
       )
     ) +

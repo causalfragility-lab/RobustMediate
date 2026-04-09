@@ -33,9 +33,9 @@ Imports:
     ggplot2 (>= 3.4.0),
     rlang,
     scales,
-    stats
+    stats,
+    broom
 Suggests:
-    broom,
     covr,
     dplyr,
     knitr,

@@ -4,7 +4,7 @@
 \alias{tidy.robmedfit}
 \title{Tidy a robmedfit object (broom-compatible)}
 \usage{
-tidy.robmedfit(x, conf.int = TRUE, ...)
+\method{tidy}{robmedfit}(x, conf.int = TRUE, ...)
 }
 \arguments{
 \item{x}{A \code{robmedfit} object.}
@@ -23,8 +23,13 @@ at the reference dose, with confidence intervals. Compatible with
 \code{broom::tidy()} and the broader \code{tidymodels} ecosystem.
 }
 \examples{
-\dontrun{
-fit <- robustmediate(X ~ Z, M ~ X + Z, Y ~ X + M + Z, data = dat)
+\donttest{
+fit <- robustmediate(
+  treatment_formula = X ~ Z1 + Z2 + Z3,
+  mediator_formula  = M ~ X + Z1 + Z2 + Z3,
+  outcome_formula   = Y ~ X + M + Z1 + Z2 + Z3,
+  data = sim_mediation, R = 50
+)
 tidy(fit)
 }
 

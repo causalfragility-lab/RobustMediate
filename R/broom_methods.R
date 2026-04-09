@@ -1,3 +1,19 @@
+# Re-export broom generics so users can call tidy(), glance(), augment()
+# without needing to attach broom themselves.
+
+#' @importFrom broom tidy
+#' @export
+broom::tidy
+
+#' @importFrom broom glance
+#' @export
+broom::glance
+
+#' @importFrom broom augment
+#' @export
+broom::augment
+
+
 #' Tidy a robmedfit object (broom-compatible)
 #'
 #' @description
@@ -13,8 +29,13 @@
 #'   `conf.high`, and `ref_dose`.
 #'
 #' @examples
-#' \dontrun{
-#' fit <- robustmediate(X ~ Z, M ~ X + Z, Y ~ X + M + Z, data = dat)
+#' \donttest{
+#' fit <- robustmediate(
+#'   treatment_formula = X ~ Z1 + Z2 + Z3,
+#'   mediator_formula  = M ~ X + Z1 + Z2 + Z3,
+#'   outcome_formula   = Y ~ X + M + Z1 + Z2 + Z3,
+#'   data = sim_mediation, R = 50
+#' )
 #' tidy(fit)
 #' }
 #'
@@ -47,8 +68,13 @@ tidy.robmedfit <- function(x, conf.int = TRUE, ...) {
 #' @return A one-row data frame.
 #'
 #' @examples
-#' \dontrun{
-#' fit <- robustmediate(X ~ Z, M ~ X + Z, Y ~ X + M + Z, data = dat)
+#' \donttest{
+#' fit <- robustmediate(
+#'   treatment_formula = X ~ Z1 + Z2 + Z3,
+#'   mediator_formula  = M ~ X + Z1 + Z2 + Z3,
+#'   outcome_formula   = Y ~ X + M + Z1 + Z2 + Z3,
+#'   data = sim_mediation, R = 50
+#' )
 #' glance(fit)
 #' }
 #'
@@ -89,8 +115,13 @@ glance.robmedfit <- function(x, ...) {
 #' }
 #'
 #' @examples
-#' \dontrun{
-#' fit <- robustmediate(X ~ Z, M ~ X + Z, Y ~ X + M + Z, data = dat)
+#' \donttest{
+#' fit <- robustmediate(
+#'   treatment_formula = X ~ Z1 + Z2 + Z3,
+#'   mediator_formula  = M ~ X + Z1 + Z2 + Z3,
+#'   outcome_formula   = Y ~ X + M + Z1 + Z2 + Z3,
+#'   data = sim_mediation, R = 50
+#' )
 #' aug <- augment(fit)
 #' hist(aug$.ipw_weight)
 #' }
